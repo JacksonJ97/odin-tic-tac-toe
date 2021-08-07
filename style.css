@@ -3,3 +3,28 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.gameboard-container {
+  background-color: beige;
+}
+
+.gameboard-row {
+  display: flex;
+}
+
+.gameboard-square {
+  font-size: 4rem;
+  padding: 1em;
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.gameboard-square:hover {
+  background-color: blanchedalmond;
+}
