@@ -76,7 +76,7 @@ const gameController = (() => {
   const playerX = player("X");
   const playerO = player("O");
   let activePlayer = "playerX";
-  let winnerDeclared = false;
+  let gameOver = false;
 
   const winConditions = [
     [0, 1, 2],
@@ -116,17 +116,17 @@ const gameController = (() => {
   };
 
   const checkTie = () => {
-    if (gameBoard.board.every((index) => index != "") && winnerDeclared === false) return true;
+    if (gameBoard.board.every((index) => index != "") && gameOver === false) return true;
   };
 
   const checkState = () => {
-    if (checkXWinner() || checkOWinner()) {
-      winnerDeclared = true;
+    if (checkXWinner() || checkOWinner() || checkTie()) {
+      gameOver = true;
     }
 
-    if (winnerDeclared || checkTie()) {
+    if (gameOver) {
       gameBoard.reset();
-      winnerDeclared = false;
+      gameOver = false;
     }
   };
 
