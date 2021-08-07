@@ -1,9 +1,9 @@
 const gameBoard = (() => {
   const board = ["", "", "", "", "", "", "", "", ""];
 
-  const setSquare = (index, symbol) => {
+  const setSquare = (index, marker) => {
     if (index > board.length) return;
-    board[index] = symbol;
+    board[index] = marker;
   };
 
   const getSquare = (index) => {
@@ -33,27 +33,71 @@ const displayController = (() => {
   gameBoardSquares.forEach((square) => {
     square.addEventListener("click", (e) => {
       let index = e.target.getAttribute("data-index");
-      gameBoard.setSquare(index, playerX.getSymbol());
-      console.log(gameBoard.board);
+
+      if (gameController.activePlayer === "playerX" && gameBoard.board[index] === "") {
+        gameBoard.setSquare(index, gameController.playerX.getMarker());
+        gameController.activePlayer = "playerO";
+      } else if (gameController.activePlayer === "playerO" && gameBoard.board[index] === "") {
+        gameBoard.setSquare(index, gameController.playerO.getMarker());
+        gameController.activePlayer = "playerX";
+      }
+
+      if (gameController.checkXWinner()) {
+        console.log("playerX wins");
+        gameBoard.reset();
+      } else if (gameController.checkOWinner()) {
+        console.log("playerO wins");
+        gameBoard.reset();
+      }
+
       render();
     });
   });
 
-  return { render };
+  return { render, gameBoardSquaresArr };
 })();
 
-const player = (symbol) => {
-  this.symbol = symbol;
+const player = (marker) => {
+  this.marker = marker;
 
-  const getSymbol = () => symbol;
+  const getMarker = () => marker;
 
-  return { getSymbol };
+  return { getMarker };
 };
 
-// const gameController = (() => {
-//   let playerX = player("X");
-//   let playerO = player("O");
-// })();
+const gameController = (() => {
+  const playerX = player("X");
+  const playerO = player("O");
+  let activePlayer = "playerX";
+  let winnerDeclared = false;
 
-let playerX = player("X");
-// displayController.render();
+  const winConditions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  const checkXWinner = () => {
+    return winConditions.some((condition) => {
+      // Will return true if one combination is satisfied
+      return condition.every((index) => {
+        return displayController.gameBoardSquaresArr[index].textContent === "X"; // Will return true if all indices in the combination array is equal to X
+      });
+    });
+  };
+
+  const checkOWinner = () => {
+    return winConditions.some((condition) => {
+      return condition.every((index) => {
+        return displayController.gameBoardSquaresArr[index].textContent === "O";
+      });
+    });
+  };
+
+  return { checkXWinner, checkOWinner, activePlayer, playerX, playerO };
+})();
