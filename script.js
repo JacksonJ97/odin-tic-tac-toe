@@ -32,13 +32,14 @@ const displayController = (() => {
 
   const setResultMessage = () => {
     const resultMessageElement = document.querySelector(".result-message");
+
     if (gameController.checkXWinner()) {
       resultMessageElement.textContent = "Player X Wins!";
     } else if (gameController.checkOWinner()) {
       resultMessageElement.textContent = "Player O Wins!";
-    }
-
-    if (!gameController.winnerDeclared) {
+    } else if (gameController.checkTie()) {
+      resultMessageElement.textContent = "It's a Tie!";
+    } else {
       resultMessageElement.textContent = "";
     }
   };
@@ -48,22 +49,13 @@ const displayController = (() => {
       let index = e.target.getAttribute("data-index");
       gameController.playRound(index);
       render();
+      setResultMessage();
 
-      if (gameController.checkXWinner()) {
+      if (gameController.checkXWinner() || gameController.checkOWinner()) {
         gameController.winnerDeclared = true;
-        setResultMessage();
-        console.log("player X wins");
-      } else if (gameController.checkOWinner()) {
-        gameController.winnerDeclared = true;
-        console.log("player O wins");
-        setResultMessage();
-      } else if (gameController.checkTie()) {
-        console.log("It's a Tie!");
-      } else {
-        setResultMessage();
       }
 
-      if (gameController.winnerDeclared) {
+      if (gameController.winnerDeclared || gameController.checkTie()) {
         gameBoard.reset();
       }
     });
@@ -100,9 +92,7 @@ const gameController = (() => {
   };
 
   const checkXWinner = () => {
-    // Will return true if one combination is satisfied
     return winConditions.some((condition) => {
-      // Will return true if all indices in the combination array is equal to X
       return condition.every((index) => {
         return gameBoard.board[index] === "X";
       });
@@ -110,9 +100,7 @@ const gameController = (() => {
   };
 
   const checkOWinner = () => {
-    // Will return true if one combination is satisfied
     return winConditions.some((condition) => {
-      // Will return true if all indices in the combination array is equal to X
       return condition.every((index) => {
         return gameBoard.board[index] === "O";
       });
@@ -120,19 +108,8 @@ const gameController = (() => {
   };
 
   const checkTie = () => {
-    if (gameBoard.board.every((index) => index != "") && winnerDeclared === false) {
-      return true;
-    }
+    if (gameBoard.board.every((index) => index != "") && winnerDeclared === false) return true;
   };
 
   return { playRound, checkXWinner, checkOWinner, checkTie, winnerDeclared };
 })();
-
-// const tieBoard = ["X", "X", "O", "O", "X", "X", "X", "O", "X"];
-
-// const checkTie = () => {
-//   const result = tieBoard.every((index) => index != "");
-//   return result;
-// };
-
-// console.log(checkTie());
