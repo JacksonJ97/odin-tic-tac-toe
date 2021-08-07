@@ -42,3 +42,13 @@ header {
   text-align: center;
   margin-top: 2em;
 }
+
+.restart-btn {
+  display: none;
+  background-color: burlywood;
+  padding: 0.75em 2em;
+  margin: 2em auto 0 auto;
+  border: 1px solid black;
+  border-radius: 6px;
+  cursor: pointer;
+}

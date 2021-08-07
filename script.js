@@ -13,8 +13,6 @@ const gameBoard = (() => {
     for (let i = 0; i < board.length; i++) {
       board[i] = "";
     }
-
-    gameController.winnerDeclared = false;
   };
 
   return { board, setSquare, reset };
@@ -44,20 +42,30 @@ const displayController = (() => {
     }
   };
 
+  const displayRestartBtn = () => {
+    const restartBtn = document.querySelector(".restart-btn");
+    restartBtn.style.display = "none";
+
+    if (gameController.checkXWinner() || gameController.checkOWinner() || gameController.checkTie()) {
+      restartBtn.style.display = "block";
+
+      restartBtn.addEventListener("click", () => {
+        gameBoard.reset();
+        setResultMessage();
+        render();
+        restartBtn.style.display = "none";
+      });
+    }
+  };
+
   gameBoardSquareElements.forEach((square) => {
     square.addEventListener("click", (e) => {
       let index = e.target.getAttribute("data-index");
       gameController.playRound(index);
       render();
+      displayRestartBtn();
       setResultMessage();
-
-      if (gameController.checkXWinner() || gameController.checkOWinner()) {
-        gameController.winnerDeclared = true;
-      }
-
-      if (gameController.winnerDeclared || gameController.checkTie()) {
-        gameBoard.reset();
-      }
+      gameController.checkState();
     });
   });
 
@@ -111,5 +119,16 @@ const gameController = (() => {
     if (gameBoard.board.every((index) => index != "") && winnerDeclared === false) return true;
   };
 
-  return { playRound, checkXWinner, checkOWinner, checkTie, winnerDeclared };
+  const checkState = () => {
+    if (checkXWinner() || checkOWinner()) {
+      winnerDeclared = true;
+    }
+
+    if (winnerDeclared || checkTie()) {
+      gameBoard.reset();
+      winnerDeclared = false;
+    }
+  };
+
+  return { playRound, checkXWinner, checkOWinner, checkTie, checkState };
 })();
