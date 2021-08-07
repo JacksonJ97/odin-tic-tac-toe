@@ -10,9 +10,11 @@ body {
   place-items: center;
 }
 
+header {
+  background-color: blue;
+}
+
 .gameboard-container {
-  width: 530px;
-  height: 612px;
   background-color: beige;
 }
 
@@ -21,14 +23,22 @@ body {
 }
 
 .gameboard-square {
-  font-size: 4rem;
-  width: 177px;
-  height: 204px;
-  padding: 1em;
+  font-size: 3rem;
+  width: 130px;
+  height: 130px;
   border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 
 .gameboard-square:hover {
   background-color: blanchedalmond;
+}
+
+.result-message {
+  font-size: 2rem;
+  text-align: center;
+  margin-top: 2em;
 }
