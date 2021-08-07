@@ -11,6 +11,8 @@ body {
 }
 
 .gameboard-container {
+  width: 530px;
+  height: 612px;
   background-color: beige;
 }
 
@@ -20,6 +22,8 @@ body {
 
 .gameboard-square {
   font-size: 4rem;
+  width: 177px;
+  height: 204px;
   padding: 1em;
   border: 1px solid black;
   cursor: pointer;
