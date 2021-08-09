@@ -20,11 +20,10 @@ const gameBoard = (() => {
 
 const displayController = (() => {
   const gameBoardSquareElements = document.querySelectorAll(".gameboard-square");
-  const gameBoardSquareElementsArr = Array.from(gameBoardSquareElements);
 
-  const render = () => {
+  const updateGameBoardDisplay = () => {
     for (let i = 0; i < gameBoard.board.length; i++) {
-      gameBoardSquareElementsArr[i].textContent = gameBoard.board[i];
+      gameBoardSquareElements[i].textContent = gameBoard.board[i];
     }
   };
 
@@ -51,24 +50,24 @@ const displayController = (() => {
 
       restartBtn.addEventListener("click", () => {
         gameBoard.reset();
+        gameController.reset();
         setResultMessage();
-        render();
+        updateGameBoardDisplay();
         restartBtn.style.display = "none";
       });
     }
   };
 
-  const squareEvent = (event) => {
-    let index = event.target.getAttribute("data-index");
-    gameController.playRound(index);
-    render();
-    displayRestartBtn();
-    setResultMessage();
-    gameController.checkState();
-  };
-
   gameBoardSquareElements.forEach((square) => {
-    square.addEventListener("click", squareEvent);
+    square.addEventListener("click", (e) => {
+      if (gameController.getIsOver()) return;
+      let index = e.target.getAttribute("data-index");
+      gameController.playRound(index);
+      updateGameBoardDisplay();
+      displayRestartBtn();
+      setResultMessage();
+      gameController.checkState();
+    });
   });
 
   return {};
@@ -78,7 +77,7 @@ const gameController = (() => {
   const playerX = player("X");
   const playerO = player("O");
   let activePlayer = "playerX";
-  let gameOver = false;
+  let isGameOver = false;
 
   const winConditions = [
     [0, 1, 2],
@@ -118,17 +117,23 @@ const gameController = (() => {
   };
 
   const checkTie = () => {
-    if (gameBoard.board.every((index) => index != "") && gameOver === false) return true;
+    if (gameBoard.board.every((index) => index != "") && isGameOver === false) return true;
   };
 
   const checkState = () => {
     if (checkXWinner() || checkOWinner() || checkTie()) {
-      gameBoard.reset();
-      gameOver = true;
-    } else {
-      gameOver = false;
+      isGameOver = true;
+      return;
     }
   };
 
-  return { playRound, checkXWinner, checkOWinner, checkTie, checkState };
+  const getIsOver = () => {
+    return isGameOver;
+  };
+
+  const reset = () => {
+    isGameOver = false;
+  };
+
+  return { playRound, checkXWinner, checkOWinner, checkTie, checkState, getIsOver, reset };
 })();
