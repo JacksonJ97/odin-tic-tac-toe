@@ -58,15 +58,17 @@ const displayController = (() => {
     }
   };
 
+  const squareEvent = (event) => {
+    let index = event.target.getAttribute("data-index");
+    gameController.playRound(index);
+    render();
+    displayRestartBtn();
+    setResultMessage();
+    gameController.checkState();
+  };
+
   gameBoardSquareElements.forEach((square) => {
-    square.addEventListener("click", (e) => {
-      let index = e.target.getAttribute("data-index");
-      gameController.playRound(index);
-      render();
-      displayRestartBtn();
-      setResultMessage();
-      gameController.checkState();
-    });
+    square.addEventListener("click", squareEvent);
   });
 
   return {};
@@ -121,11 +123,9 @@ const gameController = (() => {
 
   const checkState = () => {
     if (checkXWinner() || checkOWinner() || checkTie()) {
-      gameOver = true;
-    }
-
-    if (gameOver) {
       gameBoard.reset();
+      gameOver = true;
+    } else {
       gameOver = false;
     }
   };
